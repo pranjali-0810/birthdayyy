@@ -1058,9 +1058,6 @@ function blowOutAllCandles() {
     });
 }
 
-function relightAllCandles() {
-}
-
 
         /* -----------------------------------------------------------
            5. "REASONS YOU'RE AMAZING" FLIP CARDS
@@ -1107,12 +1104,38 @@ function relightAllCandles() {
             });
         }
 
-        function openAddNoteModal() {
-            const trimmed = newText.trim();
-            if (trimmed && state.memories[index]) {
-                state.memories[index].caption = trimmed;
-            }
-        }
+       function openAddNoteModal() {
+          const modal = document.getElementById('addNoteModal');
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+      }
+
+      function closeAddNoteModal() {
+          const modal = document.getElementById('addNoteModal');
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+      }
+
+      function addCustomAmazingCard(e) {
+          e.preventDefault();
+          const title = document.getElementById('inputCardTitle').value.trim();
+          const message = document.getElementById('inputCardNote').value.trim();
+          if (!title || !message) return;
+
+          state.amazingCards.push({
+              title,
+              message,
+              icon: "fa-heart",
+              gradient: "from-fuchsia-500 via-pink-500 to-rose-500",
+              border: "border-fuchsia-300"
+          });
+
+          document.getElementById('inputCardTitle').value = '';
+          document.getElementById('inputCardNote').value = '';
+          closeAddNoteModal();
+          renderAmazingCards();
+          showToast("Added your colorful custom note card!", "fa-heart");
+      }
 
         function handlePhotoUpload(event) {
             const file = event.target.files[0];
@@ -1431,6 +1454,45 @@ function relightAllCandles() {
 
             requestAnimationFrame(animateCelebrationCanvas);
         }
+        const canvas = document.getElementById('celebrationCanvas');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      function triggerConfettiBurst(xRatio = 0.5, yRatio = 0.4, count = 80) {
+          const colors = ['#ff4d6d', '#ff9e00', '#facc15', '#10b981', '#00d4ff', '#a855f7'];
+          for (let i = 0; i < count; i++) {
+              const angle = Math.random() * Math.PI * 2;
+              const speed = 3 + Math.random() * 8;
+              particles.push({
+                  x: canvas.width * xRatio,
+                  y: canvas.height * yRatio,
+                  vx: Math.cos(angle) * speed,
+                  vy: Math.sin(angle) * speed - 2.5,
+                  size: 6 + Math.random() * 7,
+                  color: colors[Math.floor(Math.random() * colors.length)],
+                  shape: Math.random() > 0.45 ? 'rect' : 'circle',
+                  rotation: Math.random() * 360,
+                  rotSpeed: (Math.random() - 0.5) * 10,
+                  drag: 0.985,
+                  gravity: 0.16,
+                  alpha: 1
+              });
+          }
+      }
+
+      function spawnBalloon() {
+          const container = document.getElementById('balloonContainer');
+          if (!container) return;
+          const balloon = document.createElement('div');
+          balloon.className = "floating-balloon flex flex-col items-center";
+          balloon.style.left = `${8 + Math.random() * 84}%`;
+          balloon.style.animation = `balloonFloatUp ${9 + Math.random() * 5}s linear forwards`;
+          balloon.innerHTML = `<div class="w-12 h-14 rounded-full bg-gradient-to-br from-rose-400 to-pink-600 shadow-lg"></div>`;
+          balloon.onclick = () => { playPopSound(); balloon.remove(); };
+          container.appendChild(balloon);
+      }
 
         /* -----------------------------------------------------------
            9. WEB AUDIO API SYNTHESIZER ("HAPPY BIRTHDAY" & SFX)
@@ -1467,8 +1529,6 @@ function relightAllCandles() {
             osc.start(startTime);
             osc.stop(startTime + duration + 0.05);
         } 
-        let isPlayingMelody = false;
-        let melodyTimeouts = [];
 
         function toggleBirthdayMusic() {
             const btnText = document.getElementById('musicBtnText');
