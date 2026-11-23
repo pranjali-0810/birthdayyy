@@ -1061,11 +1061,6 @@ function blowOutAllCandles() {
 function relightAllCandles() {
 }
 
-            document.getElementById('inputCardTitle').value = '';
-            document.getElementById('inputCardNote').value = '';
-            closeAddNoteModal();
-            renderAmazingCards();
-            showToast("Added your colorful custom note card!", "fa-heart");
 
         /* -----------------------------------------------------------
            5. "REASONS YOU'RE AMAZING" FLIP CARDS
@@ -1471,7 +1466,9 @@ function relightAllCandles() {
 
             osc.start(startTime);
             osc.stop(startTime + duration + 0.05);
-        }
+        } 
+        let isPlayingMelody = false;
+        let melodyTimeouts = [];
 
         function toggleBirthdayMusic() {
             const btnText = document.getElementById('musicBtnText');
