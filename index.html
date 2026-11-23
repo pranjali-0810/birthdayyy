@@ -1050,18 +1050,16 @@
             checkAllCandlesStatus();
         }
 
-        function blowOutAllCandles() {
-            state.candlesLit.forEach((lit, idx) => {
-                if (lit) {
-                    setTimeout(() => blowSingleCandle(idx), idx * 120);
-                }
-            });
+function blowOutAllCandles() {
+    state.candlesLit.forEach((lit, idx) => {
+        if (lit) {
+            setTimeout(() => blowSingleCandle(idx), idx * 120);
         }
+    });
+}
 
-        function relightAllCandles() {
-                gradient: pick.gradient,
-                border: pick.border
-            });
+function relightAllCandles() {
+}
 
             document.getElementById('inputCardTitle').value = '';
             document.getElementById('inputCardNote').value = '';
